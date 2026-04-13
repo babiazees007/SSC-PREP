@@ -1,0 +1,2022 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SSC CGL PrepDesk</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0a;
+    --bg2: #111111;
+    --bg3: #1a1a1a;
+    --bg4: #222222;
+    --border: #2a2a2a;
+    --border2: #333;
+    --text: #f0f0f0;
+    --text2: #a0a0a0;
+    --text3: #666;
+    --accent: #ffffff;
+    --accent2: #e0e0e0;
+    --green: #22c55e;
+    --green2: #16a34a;
+    --red: #ef4444;
+    --amber: #f59e0b;
+    --blue: #3b82f6;
+    --purple: #a855f7;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Space Grotesk', sans-serif;
+    min-height: 100vh;
+    font-size: 14px;
+  }
+  /* HEADER */
+  .header {
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 56px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .logo { font-size: 18px; font-weight: 700; letter-spacing: -0.5px; }
+  .logo span { color: var(--text2); font-weight: 400; }
+  .header-right { display: flex; align-items: center; gap: 16px; }
+  .date-chip {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--text2);
+    background: var(--bg3);
+    padding: 4px 10px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+  }
+  .streak-badge {
+    display: flex; align-items: center; gap: 6px;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+  }
+  .streak-fire { font-size: 16px; }
+
+  /* NAV TABS */
+  .nav {
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px;
+    display: flex;
+    gap: 4px;
+    overflow-x: auto;
+  }
+  .nav-tab {
+    padding: 10px 18px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text2);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+    transition: all 0.15s;
+    background: none;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    font-family: 'Space Grotesk', sans-serif;
+  }
+  .nav-tab:hover { color: var(--text); }
+  .nav-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  /* MAIN */
+  .main { max-width: 1200px; margin: 0 auto; padding: 24px; }
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* CARDS */
+  .card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+  }
+  .card-title {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text3);
+    margin-bottom: 12px;
+  }
+
+  /* GRID */
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 20px; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+  @media (max-width: 900px) { .grid-4 { grid-template-columns: 1fr 1fr; } .grid-3 { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 600px) { .grid-4 { grid-template-columns: 1fr 1fr; } .grid-2 { grid-template-columns: 1fr; } }
+
+  /* STAT CARD */
+  .stat { text-align: center; }
+  .stat-num {
+    font-size: 32px;
+    font-weight: 700;
+    font-family: 'JetBrains Mono', monospace;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .stat-label { font-size: 12px; color: var(--text2); }
+  .stat-sub { font-size: 11px; color: var(--text3); margin-top: 2px; }
+
+  /* PROGRESS BAR */
+  .progress-wrap { margin-bottom: 16px; }
+  .progress-label { display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 13px; }
+  .progress-label span:last-child { color: var(--text2); font-family: 'JetBrains Mono', monospace; font-size: 12px; }
+  .progress-track {
+    height: 6px;
+    background: var(--bg4);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.5s ease;
+  }
+  .fill-green { background: var(--green); }
+  .fill-white { background: var(--accent); }
+  .fill-amber { background: var(--amber); }
+  .fill-blue { background: var(--blue); }
+  .fill-purple { background: var(--purple); }
+
+  /* SECTION HEADER */
+  .section-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+  .section-title { font-size: 16px; font-weight: 600; }
+
+  /* state.syllabusData ITEMS */
+  .syllabus-group { margin-bottom: 20px; }
+  .syllabus-group-title {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--text3);
+    margin-bottom: 10px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--border);
+  }
+  .topic-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    margin-bottom: 4px;
+    cursor: pointer;
+    transition: background 0.1s;
+  }
+  .topic-item:hover { background: var(--bg3); }
+  .topic-item.done { opacity: 0.6; }
+  .topic-item.done .topic-name { text-decoration: line-through; }
+  .topic-check {
+    width: 18px; height: 18px;
+    border-radius: 5px;
+    border: 1.5px solid var(--border2);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.15s;
+  }
+  .topic-item.done .topic-check {
+    background: var(--green);
+    border-color: var(--green);
+  }
+  .topic-check svg { display: none; }
+  .topic-item.done .topic-check svg { display: block; }
+  .topic-name { flex: 1; font-size: 13px; }
+  .topic-badge {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .badge-hard { background: #3a1a1a; color: #f87171; }
+  .badge-med { background: #2a200a; color: #fbbf24; }
+  .badge-easy { background: #0a2a15; color: #4ade80; }
+
+  /* PROBLEM TRACKER */
+  .problem-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .problem-section { }
+  .problem-title { font-size: 13px; color: var(--text2); margin-bottom: 8px; }
+  .problem-big {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 40px;
+    font-weight: 700;
+    line-height: 1;
+  }
+  .problem-target { font-size: 12px; color: var(--text3); margin-top: 4px; }
+
+  /* INPUT / BUTTON */
+  input, textarea, select {
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    color: var(--text);
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 13px;
+    width: 100%;
+    outline: none;
+    transition: border 0.15s;
+  }
+  input:focus, textarea:focus, select:focus {
+    border-color: var(--accent2);
+  }
+  textarea { resize: vertical; min-height: 80px; }
+  input[type="number"] { -moz-appearance: textfield; }
+  input[type="number"]::-webkit-outer-spin-button,
+  input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; }
+
+  .btn {
+    padding: 8px 18px;
+    border-radius: 8px;
+    border: 1px solid var(--border2);
+    background: var(--bg3);
+    color: var(--text);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .btn:hover { background: var(--bg4); border-color: var(--accent2); }
+  .btn-primary {
+    background: var(--accent);
+    color: #000;
+    border-color: var(--accent);
+  }
+  .btn-primary:hover { background: var(--accent2); }
+  .btn-danger { color: var(--red); border-color: #3a1a1a; }
+  .btn-danger:hover { background: #1a0a0a; }
+  .btn-success { color: var(--green); border-color: #0a2a15; }
+  .btn-success:hover { background: #0a1a0f; }
+
+  /* DAILY LOG */
+  .log-form { display: flex; gap: 10px; margin-bottom: 16px; }
+  .log-form input { flex: 1; }
+  .log-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 12px;
+    background: var(--bg3);
+    border-radius: 8px;
+    margin-bottom: 6px;
+    border-left: 3px solid var(--green);
+  }
+  .log-item .log-time {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text3);
+    white-space: nowrap;
+    padding-top: 2px;
+  }
+  .log-text { flex: 1; font-size: 13px; }
+  .log-del { background: none; border: none; color: var(--text3); cursor: pointer; font-size: 16px; padding: 0 2px; }
+  .log-del:hover { color: var(--red); }
+
+  /* REMINDER BANNER */
+  .reminder-banner {
+    background: #1a0f00;
+    border: 1px solid #3a2500;
+    border-left: 4px solid var(--amber);
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-bottom: 20px;
+    display: none;
+  }
+  .reminder-banner.show { display: flex; align-items: center; gap: 12px; }
+  .reminder-banner .rem-icon { font-size: 18px; }
+  .reminder-banner .rem-text { flex: 1; font-size: 13px; color: #fbbf24; }
+  .reminder-banner .rem-dismiss { background: none; border: none; color: var(--text3); cursor: pointer; font-size: 18px; }
+
+  /* HEATMAP */
+  .heatmap-wrap { overflow-x: auto; padding-bottom: 8px; }
+  .heatmap {
+    display: flex;
+    gap: 3px;
+    min-width: 500px;
+  }
+  .heatmap-col { display: flex; flex-direction: column; gap: 3px; }
+  .heatmap-cell {
+    width: 12px; height: 12px;
+    border-radius: 2px;
+    background: var(--bg4);
+  }
+  .heatmap-cell.l1 { background: #14532d; }
+  .heatmap-cell.l2 { background: #16a34a; }
+  .heatmap-cell.l3 { background: #22c55e; }
+  .heatmap-cell.l4 { background: #4ade80; }
+  .heatmap-legend {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 8px;
+    justify-content: flex-end;
+  }
+  .heatmap-legend span { font-size: 11px; color: var(--text3); }
+  .hl-cell { width: 12px; height: 12px; border-radius: 2px; }
+
+  /* NOTES */
+  .note-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+  .note-date-badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    padding: 4px 10px;
+    background: var(--bg4);
+    border-radius: 6px;
+    color: var(--text2);
+  }
+  .notes-list { }
+  .note-item {
+    padding: 14px;
+    background: var(--bg3);
+    border-radius: 8px;
+    margin-bottom: 8px;
+    border-left: 3px solid var(--blue);
+  }
+  .note-item-date { font-size: 11px; color: var(--text3); font-family: 'JetBrains Mono', monospace; margin-bottom: 6px; }
+  .note-item-text { font-size: 13px; line-height: 1.6; white-space: pre-wrap; }
+  .note-item-foot { display: flex; justify-content: flex-end; margin-top: 8px; }
+
+  /* SETTINGS */
+  .settings-group { margin-bottom: 24px; }
+  .settings-label { font-size: 12px; color: var(--text2); margin-bottom: 6px; display: block; }
+  .settings-row { display: flex; gap: 10px; align-items: center; margin-bottom: 10px; }
+  .settings-row label { font-size: 13px; color: var(--text2); width: 200px; flex-shrink: 0; }
+
+  /* PROBLEM LOG TABLE */
+  .problem-log { margin-top: 16px; }
+  .problem-log-header { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 8px; font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.5px; padding: 0 8px 8px; border-bottom: 1px solid var(--border); }
+  .problem-log-row { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 8px; padding: 8px; font-size: 13px; border-radius: 6px; }
+  .problem-log-row:hover { background: var(--bg3); }
+
+  /* COUNTDOWN */
+  .countdown-wrap { text-align: center; padding: 8px 0; }
+  .countdown-num { font-family: 'JetBrains Mono', monospace; font-size: 48px; font-weight: 700; line-height: 1; }
+  .countdown-sub { font-size: 12px; color: var(--text3); margin-top: 6px; }
+
+  /* SETTINGS ITEMS */
+  .settings-list-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
+    background: var(--bg3);
+    border-radius: 6px;
+    margin-bottom: 6px;
+    border: 1px solid var(--border);
+  }
+  .settings-list-item span { font-size: 13px; }
+  .settings-sub-list { margin-left: 20px; margin-top: 4px; margin-bottom: 12px; }
+
+  /* NOTIFICATION */
+  .notif {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--bg2);
+    border: 1px solid var(--border2);
+    border-left: 4px solid var(--green);
+    padding: 12px 18px;
+    border-radius: 10px;
+    font-size: 13px;
+    z-index: 999;
+    transform: translateX(200px);
+    opacity: 0;
+    transition: all 0.3s;
+    max-width: 300px;
+  }
+  .notif.show { transform: translateX(0); opacity: 1; }
+  .notif.warn { border-left-color: var(--amber); }
+
+  /* DIVIDER */
+  .divider { height: 1px; background: var(--border); margin: 20px 0; }
+
+  /* EXAM DATE CHIP */
+  .exam-date-wrap { display: flex; align-items: center; gap: 8px; }
+  .exam-countdown-inline { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--amber); }
+
+  /* EMPTY STATE */
+  .empty { text-align: center; padding: 32px; color: var(--text3); font-size: 13px; }
+
+  /* Daily entry selector */
+  .day-selector { display: flex; gap: 8px; align-items: center; margin-bottom: 16px; }
+  .day-selector input[type="date"] { width: auto; }
+
+  /* Subject problem add */
+  .subject-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+  .subject-row .subject-label { width: 180px; font-size: 13px; color: var(--text2); }
+  .subject-row .subject-input { width: 80px; }
+
+  /* WELCOME BACK */
+  .welcome-back {
+    background: linear-gradient(135deg, #0d1a0d 0%, #0a100a 100%);
+    border: 1px solid #1a3a1a;
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .welcome-text { font-size: 20px; font-weight: 600; }
+  .welcome-sub { font-size: 13px; color: var(--text2); margin-top: 4px; }
+  .welcome-right { text-align: right; }
+
+  /* LOGIN PAGE */
+  .auth-page {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: var(--bg);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+  .auth-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 32px;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+  }
+  .auth-title { font-size: 24px; font-weight: 700; margin-bottom: 8px; text-align: center; }
+  .auth-sub { font-size: 14px; color: var(--text2); margin-bottom: 24px; text-align: center; }
+  .auth-form-group { margin-bottom: 16px; }
+  .auth-label { font-size: 12px; color: var(--text3); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; display: block; }
+  .auth-btn-group { display: flex; flex-direction: column; gap: 10px; margin-top: 24px; }
+  .auth-toggle { font-size: 13px; color: var(--text3); text-align: center; margin-top: 16px; cursor: pointer; }
+  .auth-toggle span { color: var(--accent); text-decoration: underline; }
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+
+<!-- AUTH PAGE -->
+<div class="auth-page hidden" id="authPage">
+  <div class="auth-card" id="loginCard">
+    <div class="auth-title">SSC CGL PrepDesk</div>
+    <div class="auth-sub">Log in to your account</div>
+    <div class="auth-form-group">
+      <label class="auth-label">Username</label>
+      <input type="text" id="loginUsername" placeholder="Enter username" />
+    </div>
+    <div class="auth-form-group">
+      <label class="auth-label">Password</label>
+      <input type="password" id="loginPassword" placeholder="Enter password" />
+    </div>
+    <div class="auth-btn-group">
+      <button class="btn btn-primary" onclick="handleLogin()">Login</button>
+    </div>
+    <div class="auth-toggle" onclick="toggleAuth(false)">New here? <span>Create account</span></div>
+  </div>
+
+  <div class="auth-card hidden" id="registerCard">
+    <div class="auth-title">SSC CGL PrepDesk</div>
+    <div class="auth-sub">Create your preparation account</div>
+    <div class="auth-form-group">
+      <label class="auth-label">Username</label>
+      <input type="text" id="regUsername" placeholder="Choose username" />
+    </div>
+    <div class="auth-form-group">
+      <label class="auth-label">Name</label>
+      <input type="text" id="regName" placeholder="Your real name" />
+    </div>
+    <div class="auth-form-group">
+      <label class="auth-label">Password</label>
+      <input type="password" id="regPassword" placeholder="Set password" />
+    </div>
+    <div class="auth-btn-group">
+      <button class="btn btn-primary" onclick="handleRegister()">Register</button>
+    </div>
+    <div class="auth-toggle" onclick="toggleAuth(true)">Already have an account? <span>Log in</span></div>
+  </div>
+</div>
+
+<div class="header">
+  <div class="logo">SSC CGL <span>PrepDesk</span></div>
+  <div class="header-right">
+    <div class="date-chip" id="headerDate"></div>
+    <div class="streak-badge">
+      <span class="streak-fire">🔥</span>
+      <span id="streakCount">0</span> day streak
+    </div>
+    <button class="btn" onclick="handleLogout()" style="padding:4px 10px;font-size:12px;">Logout</button>
+  </div>
+</div>
+
+<div class="nav">
+  <button class="nav-tab active" onclick="showPage('dashboard')">Dashboard</button>
+  <button class="nav-tab" onclick="showPage('syllabus')">Syllabus</button>
+  <button class="nav-tab" onclick="showPage('problems')">Problems</button>
+  <button class="nav-tab" onclick="showPage('daily')">Daily Log</button>
+  <button class="nav-tab" onclick="showPage('notes')">Notes</button>
+  <button class="nav-tab" onclick="showPage('pyqp')">PYQPs</button>
+  <button class="nav-tab" onclick="showPage('progress')">Progress</button>
+  <button class="nav-tab" onclick="showPage('settings')">Settings</button>
+</div>
+
+<div class="main">
+  <!-- REMINDER BANNER -->
+  <div class="reminder-banner" id="reminderBanner">
+    <span class="rem-icon">⚠️</span>
+    <span class="rem-text" id="reminderText"></span>
+    <button class="rem-dismiss" onclick="dismissReminder()">✕</button>
+  </div>
+
+  <!-- =================== DASHBOARD =================== -->
+  <div class="page active" id="page-dashboard">
+    <div class="welcome-back" id="welcomeBack">
+      <div>
+        <div class="welcome-text" id="welcomeMsg">Welcome back!</div>
+        <div class="welcome-sub" id="welcomeSub">Let's continue from where you left off.</div>
+      </div>
+      <div class="welcome-right">
+        <div style="font-size:11px;color:var(--text3);margin-bottom:4px;">Exam countdown</div>
+        <div class="exam-countdown-inline" id="dashCountdown">— days</div>
+      </div>
+    </div>
+
+    <div class="grid-4">
+      <div class="card stat">
+        <div class="stat-num" id="statStreak" style="color:var(--amber)">0</div>
+        <div class="stat-label">Day Streak 🔥</div>
+        <div class="stat-sub" id="statVisits">0 total visits</div>
+      </div>
+      <div class="card stat">
+        <div class="stat-num" id="statSyllabus" style="color:var(--green)">0%</div>
+        <div class="stat-label">Syllabus Done</div>
+        <div class="stat-sub" id="statSyllabusDetail">0 / 0 topics</div>
+      </div>
+      <div class="card stat">
+        <div class="stat-num" id="statProblems" style="color:var(--blue)">0</div>
+        <div class="stat-label">Problems Today</div>
+        <div class="stat-sub" id="statProblemTarget">Target: 0/day</div>
+      </div>
+      <div class="card stat">
+        <div class="stat-num" id="statTotal" style="color:var(--purple)">0</div>
+        <div class="stat-label">Total Problems</div>
+        <div class="stat-sub" id="statTotalGoal">Goal: 0</div>
+      </div>
+      <div class="card stat">
+        <div class="stat-num" id="statPYQP" style="color:var(--red)">0</div>
+        <div class="stat-label">PYQPs Done</div>
+        <div class="stat-sub" id="statPYQPDetail">0 / 0 papers</div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">Syllabus Progress by Section</div>
+        <div id="dashSyllabusProgress"></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Today's Summary</div>
+        <div id="dashToday"></div>
+        <div class="divider"></div>
+        <div style="font-size:12px;color:var(--text3);margin-bottom:8px;">Quick Log</div>
+        <div style="display:flex;gap:8px;">
+          <input type="text" id="quickLog" placeholder="What did you complete today?" />
+          <button class="btn btn-primary" onclick="quickAddLog()">Log</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Activity Heatmap (Last 3 Months)</div>
+      <div class="heatmap-wrap">
+        <div class="heatmap" id="heatmap"></div>
+      </div>
+      <div class="heatmap-legend">
+        <span>Less</span>
+        <div class="hl-cell" style="background:var(--bg4)"></div>
+        <div class="hl-cell" style="background:#14532d"></div>
+        <div class="hl-cell" style="background:#16a34a"></div>
+        <div class="hl-cell" style="background:#22c55e"></div>
+        <div class="hl-cell" style="background:#4ade80"></div>
+        <span>More</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- =================== state.syllabusData =================== -->
+  <div class="page" id="page-syllabus">
+    <div class="section-head">
+      <div class="section-title">SSC CGL Syllabus Tracker</div>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <span style="font-size:13px;color:var(--text2);" id="syllabusCount">0/0 done</span>
+        <button class="btn" onclick="resetSyllabus()">Reset All</button>
+      </div>
+    </div>
+    <div id="syllabusContainer"></div>
+  </div>
+
+  <!-- =================== PROBLEMS =================== -->
+  <div class="page" id="page-problems">
+    <div class="section-head">
+      <div class="section-title">Problem Tracker</div>
+    </div>
+    <div class="grid-3">
+      <div class="card stat">
+        <div class="stat-num" id="probToday" style="color:var(--green)">0</div>
+        <div class="stat-label">Today</div>
+        <div class="stat-sub" id="probTodayStatus"></div>
+      </div>
+      <div class="card stat">
+        <div class="stat-num" id="probTotal" style="color:var(--blue)">0</div>
+        <div class="stat-label">Total Solved</div>
+        <div class="stat-sub" id="probGoalProgress"></div>
+      </div>
+      <div class="card stat">
+        <div class="stat-num" id="probAvg" style="color:var(--purple)">0</div>
+        <div class="stat-label">Daily Average</div>
+        <div class="stat-sub">across active days</div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">Log Problems — <span id="probDateLabel"></span></div>
+        <div class="day-selector">
+          <input type="date" id="probDatePicker" onchange="renderProblems()" />
+        </div>
+        <div id="subjectRows"></div>
+        <div class="divider"></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-size:13px;color:var(--text2);">Total for this day: <strong id="probDayTotal">0</strong></span>
+          <button class="btn btn-primary" onclick="saveProblems()">Save</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Daily Progress</div>
+        <div style="margin-bottom:16px;">
+          <div class="progress-label">
+            <span>Today vs Target</span>
+            <span id="probProgressLabel">0 / 0</span>
+          </div>
+          <div class="progress-track">
+            <div class="progress-fill fill-green" id="probProgressBar" style="width:0%"></div>
+          </div>
+        </div>
+        <div style="margin-bottom:16px;">
+          <div class="progress-label">
+            <span>Total vs Goal</span>
+            <span id="probTotalLabel">0 / 0</span>
+          </div>
+          <div class="progress-track">
+            <div class="progress-fill fill-blue" id="probTotalBar" style="width:0%"></div>
+          </div>
+        </div>
+        <div class="divider"></div>
+        <div class="card-title">Recent Days</div>
+        <div id="probRecentLog"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =================== DAILY LOG =================== -->
+  <div class="page" id="page-daily">
+    <div class="section-head">
+      <div class="section-title">Daily Activity Log</div>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">Log an Activity</div>
+        <div class="day-selector">
+          <input type="date" id="logDatePicker" />
+          <span style="font-size:12px;color:var(--text3);">Pick date</span>
+        </div>
+        <div style="margin-bottom:10px;">
+          <input type="text" id="logInput" placeholder="What did you study / complete?" style="margin-bottom:8px;" />
+          <select id="logCategory" style="margin-bottom:8px;">
+            <option value="study">📚 Study</option>
+            <option value="practice">✏️ Practice</option>
+            <option value="revision">🔄 Revision</option>
+            <option value="mock">📝 Mock Test</option>
+            <option value="other">📌 Other</option>
+          </select>
+          <button class="btn btn-primary" onclick="addLog()" style="width:100%;">Add Entry</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Pending / Incomplete Tasks</div>
+        <div id="pendingTasks">
+          <div class="empty">No pending tasks.</div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="section-head" style="margin-bottom:12px;">
+        <div class="card-title" style="margin:0;">Today's Log — <span id="dailyDateLabel"></span></div>
+        <input type="date" id="viewLogDate" onchange="renderDailyLog()" style="width:auto;" />
+      </div>
+      <div id="dailyLogList"></div>
+    </div>
+  </div>
+
+  <!-- =================== NOTES =================== -->
+  <div class="page" id="page-notes">
+    <div class="section-head">
+      <div class="section-title">Study Notes</div>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="note-header">
+          <div class="card-title" style="margin:0;">Add Note</div>
+          <div class="note-date-badge" id="noteCurrentDate"></div>
+        </div>
+        <div style="margin-bottom:10px;">
+          <input type="date" id="noteDatePicker" style="margin-bottom:8px;" />
+          <input type="text" id="noteTitle" placeholder="Note title / topic" style="margin-bottom:8px;" />
+          <textarea id="noteText" placeholder="Write your notes here..."></textarea>
+          <button class="btn btn-primary" onclick="saveNote()" style="margin-top:8px;width:100%;">Save Note</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Filter Notes</div>
+        <div style="margin-bottom:12px;">
+          <input type="text" id="noteSearch" placeholder="Search notes..." oninput="renderNotes()" />
+        </div>
+        <div class="card-title">By Date</div>
+        <input type="date" id="noteFilterDate" onchange="renderNotes()" style="margin-bottom:8px;" />
+        <button class="btn" onclick="clearNoteFilter()" style="width:100%;">Show All Notes</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">All Notes</div>
+      <div id="notesList"></div>
+    </div>
+  </div>
+
+  <!-- =================== PYQPs =================== -->
+  <div class="page" id="page-pyqp">
+    <div class="section-head">
+      <div class="section-title">Previous Year Question Papers</div>
+      <div style="font-size:13px;color:var(--text2);" id="pyqpCount">0/0 completed</div>
+    </div>
+    <div id="pyqpList" class="grid-2"></div>
+  </div>
+
+  <!-- =================== PROGRESS =================== -->
+  <div class="page" id="page-progress">
+    <div class="section-head">
+      <div class="section-title">Overall Progress & Analytics</div>
+    </div>
+    <div class="grid-4" style="margin-bottom:20px;">
+      <div class="card stat">
+        <div class="stat-num" id="progDays" style="color:var(--green)">0</div>
+        <div class="stat-label">Days Studied</div>
+      </div>
+      <div class="card stat">
+        <div class="stat-num" id="progStreak" style="color:var(--amber)">0</div>
+        <div class="stat-label">Best Streak</div>
+      </div>
+      <div class="card stat">
+        <div class="stat-num" id="progTopics" style="color:var(--blue)">0</div>
+        <div class="stat-label">Topics Done</div>
+      </div>
+      <div class="card stat">
+        <div class="stat-num" id="progProbs" style="color:var(--purple)">0</div>
+        <div class="stat-label">Total Problems</div>
+      </div>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">Syllabus Completion by Subject</div>
+        <div id="progressSyllabus"></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Problems by Subject (Total)</div>
+        <div id="progressProblems"></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Exam Countdown</div>
+      <div class="countdown-wrap">
+        <div class="countdown-num" id="bigCountdown">—</div>
+        <div class="countdown-sub" id="bigCountdownSub">Set your exam date in Settings</div>
+      </div>
+      <div style="margin-top:20px;">
+        <div class="progress-label">
+          <span>Days studied / Total days</span>
+          <span id="timeProgressLabel">0 / 0</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill fill-amber" id="timeProgressBar" style="width:0%"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =================== SETTINGS =================== -->
+  <div class="page" id="page-settings">
+    <div class="section-head">
+      <div class="section-title">Settings & Goals</div>
+    </div>
+    <div class="card" style="margin-bottom:16px;">
+      <div class="card-title">Exam Info</div>
+      <div class="settings-row">
+        <label>Exam Date</label>
+        <input type="date" id="settingExamDate" style="width:180px;" />
+      </div>
+      <div class="settings-row">
+        <label>Your Name</label>
+        <input type="text" id="settingName" placeholder="Your name" style="width:180px;" />
+      </div>
+    </div>
+    <div class="card" style="margin-bottom:16px;">
+      <div class="card-title">Daily Goals</div>
+      <div class="settings-row">
+        <label>Problems per Day Target</label>
+        <input type="number" id="settingProbTarget" style="width:80px;" min="1" value="50" />
+      </div>
+      <div class="settings-row">
+        <label>Total Problems Goal</label>
+        <input type="number" id="settingTotalGoal" style="width:100px;" min="1" value="5000" />
+      </div>
+    </div>
+    <div class="card" style="margin-bottom:16px;">
+      <div class="card-title">Subjects (for problem tracking)</div>
+      <div id="settingSubjects"></div>
+      <div style="display:flex;gap:8px;margin-top:10px;">
+        <input type="text" id="newSubjectInput" placeholder="Add subject..." />
+        <button class="btn" onclick="addSubject()">Add</button>
+      </div>
+    </div>
+    <div class="card" style="margin-bottom:16px;">
+      <div class="card-title">Syllabus Management</div>
+      <div id="syllabusManagementList"></div>
+      <div style="display:flex;gap:8px;margin-top:10px;">
+        <input type="text" id="newSyllabusSectionInput" placeholder="Add new section (e.g. Maths)..." />
+        <button class="btn" onclick="addSyllabusSection()">Add Section</button>
+      </div>
+    </div>
+    <div class="card" style="margin-bottom:16px;">
+      <div class="card-title">Previous Year Question Papers</div>
+      <div id="pyqpManagementList"></div>
+      <div style="display:flex;gap:8px;margin-top:10px;">
+        <input type="text" id="newPYQPName" placeholder="Paper Name (e.g. CGL 2023)..." />
+        <input type="date" id="newPYQPDate" style="width:150px;" />
+        <button class="btn" onclick="addPYQP()">Add Paper</button>
+      </div>
+    </div>
+    <button class="btn btn-primary" onclick="saveSettings()" style="margin-right:8px;">Save Settings</button>
+    <button class="btn btn-danger" onclick="clearAllData()">Clear All Data</button>
+  </div>
+</div>
+
+<div class="notif" id="notif"></div>
+
+<script>
+// =================== STATE ===================
+const TODAY = new Date().toISOString().split('T')[0];
+
+function getCurrentUser() {
+  return sessionStorage.getItem('ssc_cgl_user');
+}
+
+function getState() {
+  const user = getCurrentUser();
+  const defaultSyllabus = {
+    'Quantitative Aptitude': {
+      color: 'fill-blue',
+      topics: [
+        { name: 'Number System', diff: 'med' },
+        { name: 'LCM & HCF', diff: 'easy' },
+        { name: 'Simplification', diff: 'easy' },
+        { name: 'Ratio & Proportion', diff: 'easy' },
+        { name: 'Percentage', diff: 'easy' },
+        { name: 'Profit & Loss', diff: 'med' },
+        { name: 'Simple Interest', diff: 'easy' },
+        { name: 'Compound Interest', diff: 'med' },
+        { name: 'Average', diff: 'easy' },
+        { name: 'Speed, Time & Distance', diff: 'med' },
+        { name: 'Time & Work', diff: 'med' },
+        { name: 'Pipes & Cistern', diff: 'med' },
+        { name: 'Algebra', diff: 'hard' },
+        { name: 'Geometry', diff: 'hard' },
+        { name: 'Mensuration', diff: 'hard' },
+        { name: 'Trigonometry', diff: 'hard' },
+        { name: 'Data Interpretation', diff: 'med' },
+        { name: 'Mixtures & Alligation', diff: 'med' },
+      ]
+    },
+    'English Language': {
+      color: 'fill-green',
+      topics: [
+        { name: 'Reading Comprehension', diff: 'med' },
+        { name: 'Fill in the Blanks', diff: 'easy' },
+        { name: 'Sentence Improvement', diff: 'med' },
+        { name: 'Error Detection', diff: 'med' },
+        { name: 'Synonyms & Antonyms', diff: 'easy' },
+        { name: 'One Word Substitution', diff: 'med' },
+        { name: 'Idioms & Phrases', diff: 'hard' },
+        { name: 'Cloze Test', diff: 'med' },
+        { name: 'Active / Passive Voice', diff: 'easy' },
+        { name: 'Direct / Indirect Speech', diff: 'med' },
+        { name: 'Para Jumbles', diff: 'hard' },
+      ]
+    },
+    'General Intelligence & Reasoning': {
+      color: 'fill-purple',
+      topics: [
+        { name: 'Analogy', diff: 'easy' },
+        { name: 'Classification', diff: 'easy' },
+        { name: 'Series Completion', diff: 'med' },
+        { name: 'Coding-Decoding', diff: 'med' },
+        { name: 'Blood Relations', diff: 'med' },
+        { name: 'Direction & Distance', diff: 'med' },
+        { name: 'Seating Arrangement', diff: 'hard' },
+        { name: 'Syllogism', diff: 'hard' },
+        { name: 'Venn Diagrams', diff: 'med' },
+        { name: 'Matrix', diff: 'med' },
+        { name: 'Non-Verbal Reasoning', diff: 'hard' },
+        { name: 'Mathematical Operations', diff: 'easy' },
+      ]
+    },
+    'General Awareness': {
+      color: 'fill-amber',
+      topics: [
+        { name: 'History – Ancient', diff: 'hard' },
+        { name: 'History – Medieval', diff: 'hard' },
+        { name: 'History – Modern', diff: 'hard' },
+        { name: 'Geography – India', diff: 'med' },
+        { name: 'Geography – World', diff: 'med' },
+        { name: 'Indian Polity', diff: 'med' },
+        { name: 'Indian Economy', diff: 'hard' },
+        { name: 'General Science (Physics)', diff: 'med' },
+        { name: 'General Science (Chemistry)', diff: 'med' },
+        { name: 'General Science (Biology)', diff: 'med' },
+        { name: 'Current Affairs', diff: 'hard' },
+        { name: 'Sports & Awards', diff: 'easy' },
+        { name: 'Books & Authors', diff: 'easy' },
+        { name: 'Science & Technology', diff: 'med' },
+      ]
+    },
+    'Statistics (Tier 2 Optional)': {
+      color: 'fill-white',
+      topics: [
+        { name: 'Measures of Central Tendency', diff: 'med' },
+        { name: 'Measures of Dispersion', diff: 'med' },
+        { name: 'Moments, Skewness & Kurtosis', diff: 'hard' },
+        { name: 'Correlation & Regression', diff: 'hard' },
+        { name: 'Probability', diff: 'hard' },
+        { name: 'Index Numbers', diff: 'med' },
+        { name: 'Time Series', diff: 'hard' },
+      ]
+    }
+  };
+
+  const defaults = {
+    settings: {
+      examDate: '',
+      name: '',
+      probTarget: 50,
+      totalGoal: 5000,
+      subjects: ['Quantitative Aptitude', 'English', 'General Awareness', 'Reasoning']
+    },
+    syllabusData: defaultSyllabus,
+    syllabus: {},
+    problems: {},
+    logs: {},
+    notes: [],
+    visits: [],
+    streak: 0,
+    bestStreak: 0,
+    lastVisit: null,
+    lastPage: 'dashboard',
+    pyqps: [
+      { id: '2023_tier1_shift1', name: 'CGL 2023 Tier-1 (Shift 1)', date: '2023-07-14', completed: false },
+      { id: '2023_tier1_shift2', name: 'CGL 2023 Tier-1 (Shift 2)', date: '2023-07-14', completed: false },
+      { id: '2022_tier2_paper1', name: 'CGL 2022 Tier-2 (Paper 1)', date: '2023-03-02', completed: false },
+    ]
+  };
+  try {
+    if (!user) return defaults;
+    const saved = localStorage.getItem('ssc_cgl_state_' + user);
+    if (!saved) return defaults;
+    const parsed = JSON.parse(saved);
+    // Ensure nested objects like syllabusData are also defaulted if missing
+    if (!parsed.syllabusData) parsed.syllabusData = defaultSyllabus;
+    if (!parsed.pyqps) parsed.pyqps = defaults.pyqps;
+    return Object.assign(defaults, parsed);
+  } catch(e) { return defaults; }
+}
+
+function saveState(state) {
+  const user = getCurrentUser();
+  if (user) {
+    localStorage.setItem('ssc_cgl_state_' + user, JSON.stringify(state));
+  }
+}
+
+let state = getState();
+
+// =================== AUTHENTICATION ===================
+function toggleAuth(isLogin) {
+  document.getElementById('loginCard').classList.toggle('hidden', !isLogin);
+  document.getElementById('registerCard').classList.toggle('hidden', isLogin);
+}
+
+function handleLogin() {
+  const user = document.getElementById('loginUsername').value.trim();
+  const pass = document.getElementById('loginPassword').value;
+  const users = JSON.parse(localStorage.getItem('ssc_cgl_users') || '{}');
+
+  if (users[user] && users[user].password === pass) {
+    sessionStorage.setItem('ssc_cgl_user', user);
+    document.getElementById('authPage').classList.add('hidden');
+    state = getState();
+    init();
+  } else {
+    alert('Invalid username or password');
+  }
+}
+
+function handleRegister() {
+  const user = document.getElementById('regUsername').value.trim();
+  const name = document.getElementById('regName').value.trim();
+  const pass = document.getElementById('regPassword').value;
+  const users = JSON.parse(localStorage.getItem('ssc_cgl_users') || '{}');
+
+  if (!user || !pass || !name) { alert('Please fill all fields'); return; }
+  if (users[user]) { alert('Username taken'); return; }
+
+  users[user] = { password: pass, name: name };
+  localStorage.setItem('ssc_cgl_users', JSON.stringify(users));
+  
+  sessionStorage.setItem('ssc_cgl_user', user);
+  state = getState();
+  state.settings.name = name;
+  saveState(state);
+  
+  document.getElementById('authPage').classList.add('hidden');
+  init();
+}
+
+function handleLogout() {
+  sessionStorage.removeItem('ssc_cgl_user');
+  location.reload();
+}
+
+// =================== INIT ===================
+function init() {
+  const user = getCurrentUser();
+  if (!user) {
+    document.getElementById('authPage').classList.remove('hidden');
+    return;
+  }
+  document.getElementById('authPage').classList.add('hidden');
+
+  // record visit
+  if (!state.visits.includes(TODAY)) {
+    state.visits.push(TODAY);
+  }
+  // streak logic
+  calcStreak();
+  saveState(state);
+
+  // Set today dates in pickers
+  document.getElementById('probDatePicker').value = TODAY;
+  document.getElementById('logDatePicker').value = TODAY;
+  document.getElementById('viewLogDate').value = TODAY;
+  document.getElementById('noteDatePicker').value = TODAY;
+
+  // Header date
+  document.getElementById('headerDate').textContent = formatDate(TODAY);
+  
+  // Show username in logo
+  const logo = document.querySelector('.logo');
+  logo.innerHTML = `SSC CGL <span>PrepDesk | ${user}</span>`;
+
+  // Welcome
+  const name = state.settings.name;
+  document.getElementById('welcomeMsg').textContent = name ? `Welcome back, ${name}!` : 'Welcome back!';
+  const hour = new Date().getHours();
+  const timeStr = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
+  document.getElementById('welcomeSub').textContent = `${timeStr} — let's continue from where you left off.`;
+
+  // Init syllabus data
+  initSyllabusState();
+
+  // Load settings into form
+  loadSettingsForm();
+
+  // Render all
+  renderAll();
+  checkReminder();
+  
+  // Restore last page
+  if (state.lastPage) showPage(state.lastPage);
+}
+
+function calcStreak() {
+  const sorted = [...state.visits].sort();
+  let streak = 0;
+  let best = 0;
+  let cur = 0;
+  for (let i = 0; i < sorted.length; i++) {
+    if (i === 0) { cur = 1; }
+    else {
+      const prev = new Date(sorted[i-1]);
+      const curr = new Date(sorted[i]);
+      const diff = (curr - prev) / 86400000;
+      if (diff === 1) cur++;
+      else cur = 1;
+    }
+    if (cur > best) best = cur;
+  }
+  // Check if today is in streak
+  if (sorted.length > 0) {
+    const last = sorted[sorted.length - 1];
+    const yesterday = new Date(TODAY);
+    yesterday.setDate(yesterday.getDate() - 1);
+    const yd = yesterday.toISOString().split('T')[0];
+    if (last === TODAY) {
+      // count backwards
+      streak = 1;
+      let d = new Date(TODAY);
+      while (true) {
+        d.setDate(d.getDate() - 1);
+        const ds = d.toISOString().split('T')[0];
+        if (state.visits.includes(ds)) streak++;
+        else break;
+      }
+    } else if (last === yd) {
+      streak = 1;
+      let d = new Date(yd);
+      while (true) {
+        d.setDate(d.getDate() - 1);
+        const ds = d.toISOString().split('T')[0];
+        if (state.visits.includes(ds)) streak++;
+        else break;
+      }
+    } else { streak = 0; }
+  }
+  state.streak = streak;
+  state.bestStreak = Math.max(best, state.bestStreak || 0);
+}
+
+function initSyllabusState() {
+  Object.entries(state.syllabusData).forEach(([section, data]) => {
+    if (!state.syllabus[section]) state.syllabus[section] = {};
+    data.topics.forEach(t => {
+      if (state.syllabus[section][t.name] === undefined) {
+        state.syllabus[section][t.name] = false;
+      }
+    });
+  });
+}
+
+// =================== RENDER ALL ===================
+function renderAll() {
+  document.getElementById('streakCount').textContent = state.streak;
+  renderDashboard();
+  renderSyllabus();
+  renderPYQP();
+  renderProblems();
+  renderDailyLog();
+  renderNotes();
+  renderProgress();
+}
+
+// =================== DASHBOARD ===================
+function renderDashboard() {
+  // Streak
+  document.getElementById('statStreak').textContent = state.streak;
+  document.getElementById('statVisits').textContent = `${state.visits.length} total visits`;
+
+  // Syllabus
+  let done = 0, total = 0;
+  Object.entries(state.syllabusData).forEach(([sec, data]) => {
+    data.topics.forEach(t => {
+      total++;
+      if (state.syllabus[sec] && state.syllabus[sec][t.name]) done++;
+    });
+  });
+  const pct = total ? Math.round(done/total*100) : 0;
+  document.getElementById('statSyllabus').textContent = pct + '%';
+  document.getElementById('statSyllabusDetail').textContent = `${done} / ${total} topics`;
+
+  // Problems today
+  const todayProbs = getTodayProblems();
+  const target = state.settings.probTarget;
+  document.getElementById('statProblems').textContent = todayProbs;
+  document.getElementById('statProblemTarget').textContent = `Target: ${target}/day`;
+
+  // Total problems
+  const totalProbs = getTotalProblems();
+  const totalGoal = state.settings.totalGoal;
+  document.getElementById('statTotal').textContent = totalProbs;
+  document.getElementById('statTotalGoal').textContent = `Goal: ${totalGoal.toLocaleString()}`;
+
+  // Exam countdown
+  const cd = getCountdown();
+  document.getElementById('dashCountdown').textContent = cd !== null ? `${cd} days` : '—';
+
+  // PYQPs
+  const compPYQP = state.pyqps.filter(p => p.completed).length;
+  document.getElementById('statPYQP').textContent = compPYQP;
+  document.getElementById('statPYQPDetail').textContent = `${compPYQP} / ${state.pyqps.length} papers`;
+
+  // Syllabus progress bars
+  const cont = document.getElementById('dashSyllabusProgress');
+  cont.innerHTML = '';
+  const fillColors = ['fill-blue','fill-green','fill-purple','fill-amber','fill-white'];
+  Object.entries(state.syllabusData).forEach(([sec, data], i) => {
+    let d = 0, t = data.topics.length;
+    data.topics.forEach(tp => { if (state.syllabus[sec] && state.syllabus[sec][tp.name]) d++; });
+    const p = t ? Math.round(d/t*100) : 0;
+    cont.innerHTML += `
+      <div class="progress-wrap">
+        <div class="progress-label"><span>${sec}</span><span>${d}/${t}</span></div>
+        <div class="progress-track"><div class="progress-fill ${fillColors[i % fillColors.length]}" style="width:${p}%"></div></div>
+      </div>`;
+  });
+
+  // Today's log summary
+  const todayLogs = state.logs[TODAY] || [];
+  const todayDiv = document.getElementById('dashToday');
+  if (todayLogs.length === 0) {
+    todayDiv.innerHTML = `<div class="empty" style="padding:12px;">No activity logged today yet.</div>`;
+  } else {
+    todayDiv.innerHTML = todayLogs.slice(-3).map(l => `
+      <div class="log-item" style="margin-bottom:6px;">
+        <span class="log-time">${l.time}</span>
+        <span class="log-text">${l.text}</span>
+      </div>`).join('');
+  }
+
+  // Heatmap
+  renderHeatmap();
+}
+
+function renderHeatmap() {
+  const hm = document.getElementById('heatmap');
+  hm.innerHTML = '';
+  const end = new Date(TODAY);
+  const start = new Date(TODAY);
+  start.setDate(start.getDate() - 90);
+
+  // build week columns
+  const cols = {};
+  let d = new Date(start);
+  while (d <= end) {
+    const ds = d.toISOString().split('T')[0];
+    const week = getWeekNum(d);
+    if (!cols[week]) cols[week] = [];
+    const count = getActivityCount(ds);
+    let lvl = '';
+    if (count === 0) lvl = '';
+    else if (count <= 2) lvl = 'l1';
+    else if (count <= 5) lvl = 'l2';
+    else if (count <= 10) lvl = 'l3';
+    else lvl = 'l4';
+    cols[week].push({ ds, lvl, dow: d.getDay() });
+    d.setDate(d.getDate() + 1);
+  }
+
+  Object.values(cols).forEach(days => {
+    const col = document.createElement('div');
+    col.className = 'heatmap-col';
+    // pad for day of week
+    const firstDow = days[0].dow;
+    for (let i = 0; i < firstDow; i++) {
+      const pad = document.createElement('div');
+      pad.className = 'heatmap-cell';
+      col.appendChild(pad);
+    }
+    days.forEach(day => {
+      const cell = document.createElement('div');
+      cell.className = 'heatmap-cell ' + day.lvl;
+      cell.title = `${day.ds}: ${getActivityCount(day.ds)} activities`;
+      col.appendChild(cell);
+    });
+    hm.appendChild(col);
+  });
+}
+
+function getWeekNum(d) {
+  const start = new Date(d.getFullYear(), 0, 1);
+  return Math.ceil(((d - start) / 86400000 + start.getDay() + 1) / 7);
+}
+
+function getActivityCount(ds) {
+  let count = 0;
+  if (state.logs[ds]) count += state.logs[ds].length;
+  if (state.problems[ds]) {
+    const subs = state.problems[ds];
+    Object.values(subs).forEach(v => count += (v > 0 ? 1 : 0));
+  }
+  return count;
+}
+
+// =================== state.syllabusData ===================
+function renderSyllabus() {
+  const cont = document.getElementById('syllabusContainer');
+  cont.innerHTML = '';
+  let done = 0, total = 0;
+
+  Object.entries(state.syllabusData).forEach(([section, data]) => {
+    const group = document.createElement('div');
+    group.className = 'syllabus-group card';
+    group.style.marginBottom = '16px';
+
+    let sd = 0;
+    data.topics.forEach(t => {
+      total++;
+      if (state.syllabus[section] && state.syllabus[section][t.name]) { done++; sd++; }
+    });
+    const pct = data.topics.length ? Math.round(sd / data.topics.length * 100) : 0;
+
+    group.innerHTML = `
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+        <div class="syllabus-group-title" style="margin:0;border:none;padding:0;">${section}</div>
+        <span style="font-size:12px;color:var(--text2);font-family:'JetBrains Mono',monospace;">${sd}/${data.topics.length} • ${pct}%</span>
+      </div>
+      <div class="progress-track" style="margin-bottom:12px;">
+        <div class="progress-fill ${data.color}" style="width:${pct}%"></div>
+      </div>
+      <div class="topics-list">
+        ${data.topics.map(t => {
+          const checked = state.syllabus[section] && state.syllabus[section][t.name];
+          return `<div class="topic-item ${checked ? 'done' : ''}" onclick="toggleTopic('${section}','${t.name}')">
+            <div class="topic-check">
+              <svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg>
+            </div>
+            <span class="topic-name">${t.name}</span>
+            <span class="topic-badge badge-${t.diff}">${t.diff}</span>
+          </div>`;
+        }).join('')}
+      </div>`;
+    cont.appendChild(group);
+  });
+
+  document.getElementById('syllabusCount').textContent = `${done}/${total} done`;
+}
+
+function toggleTopic(section, topic) {
+  if (!state.syllabus[section]) state.syllabus[section] = {};
+  state.syllabus[section][topic] = !state.syllabus[section][topic];
+  saveState(state);
+  renderSyllabus();
+  renderDashboard();
+  renderProgress();
+  showNotif(`Topic ${state.syllabus[section][topic] ? 'completed ✓' : 'unmarked'}: ${topic}`);
+}
+
+function resetSyllabus() {
+  if (!confirm('Reset all syllabus progress?')) return;
+  Object.entries(state.syllabusData).forEach(([s]) => {
+    state.syllabus[s] = {};
+  });
+  saveState(state);
+  renderSyllabus();
+  renderDashboard();
+}
+
+// =================== PROBLEMS ===================
+function renderProblems() {
+  const subjects = state.settings.subjects;
+  const dateStr = document.getElementById('probDatePicker').value || TODAY;
+  document.getElementById('probDateLabel').textContent = formatDate(dateStr);
+
+  // Subject rows
+  const rowsCont = document.getElementById('subjectRows');
+  rowsCont.innerHTML = '';
+  let dayTotal = 0;
+  subjects.forEach(sub => {
+    const val = (state.problems[dateStr] && state.problems[dateStr][sub]) || 0;
+    dayTotal += val;
+    rowsCont.innerHTML += `
+      <div class="subject-row">
+        <span class="subject-label">${sub}</span>
+        <input type="number" class="subject-input" id="prob_${sanitize(sub)}" min="0" value="${val}" oninput="updateDayTotal()" />
+      </div>`;
+  });
+  document.getElementById('probDayTotal').textContent = dayTotal;
+
+  // Stats
+  const todayProbs = getTodayProblems();
+  const totalProbs = getTotalProblems();
+  const target = state.settings.probTarget;
+  const totalGoal = state.settings.totalGoal;
+
+  document.getElementById('probToday').textContent = todayProbs;
+  document.getElementById('probTodayStatus').textContent = todayProbs >= target ? '✓ Target met!' : `Need ${target - todayProbs} more`;
+  document.getElementById('probTotal').textContent = totalProbs;
+  document.getElementById('probGoalProgress').textContent = `${Math.round(totalProbs/totalGoal*100)}% of goal`;
+
+  const activeDays = Object.keys(state.problems).filter(d => getTotalForDate(d) > 0).length;
+  const avg = activeDays ? Math.round(totalProbs / activeDays) : 0;
+  document.getElementById('probAvg').textContent = avg;
+
+  // Progress bars
+  const tp = Math.min(100, target ? Math.round(todayProbs/target*100) : 0);
+  document.getElementById('probProgressBar').style.width = tp + '%';
+  document.getElementById('probProgressLabel').textContent = `${todayProbs} / ${target}`;
+  const gp = Math.min(100, totalGoal ? Math.round(totalProbs/totalGoal*100) : 0);
+  document.getElementById('probTotalBar').style.width = gp + '%';
+  document.getElementById('probTotalLabel').textContent = `${totalProbs} / ${totalGoal}`;
+
+  // Recent log
+  const recentCont = document.getElementById('probRecentLog');
+  const sortedDates = Object.keys(state.problems).filter(d => getTotalForDate(d) > 0).sort().reverse().slice(0, 7);
+  if (sortedDates.length === 0) {
+    recentCont.innerHTML = '<div class="empty">No problems logged yet.</div>';
+  } else {
+    recentCont.innerHTML = sortedDates.map(d => {
+      const t = getTotalForDate(d);
+      const pct = Math.min(100, target ? Math.round(t/target*100) : 0);
+      const color = t >= target ? 'var(--green)' : 'var(--text2)';
+      return `<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+        <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text3);width:80px;cursor:pointer;text-decoration:underline;" onclick="editProbDate('${d}')">${d}</span>
+        <div class="progress-track" style="flex:1;"><div class="progress-fill fill-${t>=target?'green':'white'}" style="width:${pct}%"></div></div>
+        <span style="font-size:12px;color:${color};font-family:'JetBrains Mono',monospace;width:30px;text-align:right;">${t}</span>
+        <button class="log-del" onclick="deleteProbDate('${d}')" title="Delete day's log">✕</button>
+      </div>`;
+    }).join('');
+  }
+}
+
+function updateDayTotal() {
+  const subjects = state.settings.subjects;
+  let total = 0;
+  subjects.forEach(sub => {
+    const el = document.getElementById('prob_' + sanitize(sub));
+    if (el) total += parseInt(el.value) || 0;
+  });
+  document.getElementById('probDayTotal').textContent = total;
+}
+
+function saveProblems() {
+  const dateStr = document.getElementById('probDatePicker').value || TODAY;
+  const subjects = state.settings.subjects;
+  if (!state.problems[dateStr]) state.problems[dateStr] = {};
+  subjects.forEach(sub => {
+    const el = document.getElementById('prob_' + sanitize(sub));
+    if (el) state.problems[dateStr][sub] = parseInt(el.value) || 0;
+  });
+  saveState(state);
+  renderProblems();
+  renderDashboard();
+  renderProgress();
+  showNotif('Problems saved!');
+}
+
+function editProbDate(d) {
+  document.getElementById('probDatePicker').value = d;
+  renderProblems();
+}
+
+function deleteProbDate(d) {
+  if (confirm(`Clear problems log for ${d}?`)) {
+    delete state.problems[d];
+    saveState(state);
+    renderProblems();
+    renderDashboard();
+    renderProgress();
+    showNotif('Day log cleared.');
+  }
+}
+
+function getTodayProblems() { return getTotalForDate(TODAY); }
+function getTotalForDate(d) {
+  if (!state.problems[d]) return 0;
+  return Object.values(state.problems[d]).reduce((a, b) => a + b, 0);
+}
+function getTotalProblems() {
+  return Object.keys(state.problems).reduce((sum, d) => sum + getTotalForDate(d), 0);
+}
+
+// =================== DAILY LOG ===================
+function addLog() {
+  const text = document.getElementById('logInput').value.trim();
+  const cat = document.getElementById('logCategory').value;
+  const dateStr = document.getElementById('logDatePicker').value || TODAY;
+  if (!text) return;
+  if (!state.logs[dateStr]) state.logs[dateStr] = [];
+  state.logs[dateStr].push({
+    text: text,
+    category: cat,
+    time: new Date().toTimeString().slice(0,5),
+    ts: Date.now()
+  });
+  saveState(state);
+  document.getElementById('logInput').value = '';
+  document.getElementById('viewLogDate').value = dateStr;
+  renderDailyLog();
+  renderDashboard();
+  showNotif('Activity logged!');
+}
+
+function quickAddLog() {
+  const text = document.getElementById('quickLog').value.trim();
+  if (!text) return;
+  if (!state.logs[TODAY]) state.logs[TODAY] = [];
+  state.logs[TODAY].push({ text, category: 'study', time: new Date().toTimeString().slice(0,5), ts: Date.now() });
+  saveState(state);
+  document.getElementById('quickLog').value = '';
+  renderDashboard();
+  renderDailyLog();
+  showNotif('Logged!');
+}
+
+function renderDailyLog() {
+  const dateStr = document.getElementById('viewLogDate').value || TODAY;
+  document.getElementById('dailyDateLabel').textContent = formatDate(dateStr);
+  const logs = state.logs[dateStr] || [];
+  const cont = document.getElementById('dailyLogList');
+  if (logs.length === 0) {
+    cont.innerHTML = '<div class="empty">No activity logged for this day.</div>';
+    return;
+  }
+  const catIcons = { study: '📚', practice: '✏️', revision: '🔄', mock: '📝', other: '📌' };
+  cont.innerHTML = logs.map((l, i) => `
+    <div class="log-item">
+      <span class="log-time">${l.time || ''} ${catIcons[l.category] || '📌'}</span>
+      <span class="log-text">${l.text}</span>
+      <button class="log-del" onclick="deleteLog('${dateStr}',${i})">✕</button>
+    </div>`).join('');
+  renderPendingTasks();
+}
+
+function deleteLog(dateStr, idx) {
+  state.logs[dateStr].splice(idx, 1);
+  saveState(state);
+  renderDailyLog();
+  renderDashboard();
+}
+
+function renderPendingTasks() {
+  // Show logs from past 7 days that were on days with no problem count
+  const cont = document.getElementById('pendingTasks');
+  const pending = [];
+  const past7 = [];
+  for (let i = 1; i <= 7; i++) {
+    const d = new Date(TODAY);
+    d.setDate(d.getDate() - i);
+    past7.push(d.toISOString().split('T')[0]);
+  }
+  past7.forEach(d => {
+    const probs = getTotalForDate(d);
+    const target = state.settings.probTarget;
+    if (probs < target) {
+      pending.push({ date: d, probs, target });
+    }
+  });
+  if (pending.length === 0) {
+    cont.innerHTML = '<div class="empty">No pending reminders. Great job! 🎉</div>';
+  } else {
+    cont.innerHTML = pending.map(p => `
+      <div class="log-item" style="border-left-color:var(--amber);">
+        <span class="log-time">⚠️ ${p.date}</span>
+        <span class="log-text">Only ${p.probs}/${p.target} problems solved.</span>
+      </div>`).join('');
+  }
+}
+
+// =================== REMINDER ===================
+function checkReminder() {
+  const target = state.settings.probTarget;
+  const todayProbs = getTodayProblems();
+  const hour = new Date().getHours();
+  const banner = document.getElementById('reminderBanner');
+  const text = document.getElementById('reminderText');
+
+  // Check if yesterday's tasks are incomplete
+  const yesterday = new Date(TODAY);
+  yesterday.setDate(yesterday.getDate() - 1);
+  const yd = yesterday.toISOString().split('T')[0];
+  const ydProbs = getTotalForDate(yd);
+
+  if (ydProbs < target && state.visits.includes(yd)) {
+    banner.classList.add('show');
+    text.textContent = `Yesterday (${yd}) you solved ${ydProbs}/${target} problems. Complete yesterday's tasks!`;
+    return;
+  }
+  if (hour >= 20 && todayProbs < target) {
+    banner.classList.add('show');
+    text.textContent = `You've solved ${todayProbs}/${target} problems today. Don't break your streak!`;
+  }
+}
+
+function dismissReminder() {
+  document.getElementById('reminderBanner').classList.remove('show');
+}
+
+// =================== NOTES ===================
+function saveNote() {
+  const date = document.getElementById('noteDatePicker').value || TODAY;
+  const title = document.getElementById('noteTitle').value.trim();
+  const text = document.getElementById('noteText').value.trim();
+  if (!text) return;
+  state.notes.unshift({ date, title: title || 'Untitled', text, ts: Date.now() });
+  saveState(state);
+  document.getElementById('noteText').value = '';
+  document.getElementById('noteTitle').value = '';
+  renderNotes();
+  showNotif('Note saved!');
+}
+
+function deleteNote(ts) {
+  state.notes = state.notes.filter(n => n.ts !== ts);
+  saveState(state);
+  renderNotes();
+}
+
+function renderNotes() {
+  const search = document.getElementById('noteSearch').value.toLowerCase();
+  const filterDate = document.getElementById('noteFilterDate').value;
+  const cont = document.getElementById('notesList');
+  document.getElementById('noteCurrentDate').textContent = formatDate(TODAY);
+  let notes = [...state.notes];
+  if (search) notes = notes.filter(n => n.text.toLowerCase().includes(search) || n.title.toLowerCase().includes(search));
+  if (filterDate) notes = notes.filter(n => n.date === filterDate);
+  if (notes.length === 0) {
+    cont.innerHTML = '<div class="empty">No notes found.</div>';
+    return;
+  }
+  cont.innerHTML = notes.map(n => `
+    <div class="note-item">
+      <div class="note-item-date">${n.date} — ${n.title}</div>
+      <div class="note-item-text">${escapeHtml(n.text)}</div>
+      <div class="note-item-foot">
+        <button class="btn btn-danger" onclick="deleteNote(${n.ts})">Delete</button>
+      </div>
+    </div>`).join('');
+}
+
+function clearNoteFilter() {
+  document.getElementById('noteFilterDate').value = '';
+  document.getElementById('noteSearch').value = '';
+  renderNotes();
+}
+
+// =================== PROGRESS ===================
+function renderProgress() {
+  const activeDays = Object.keys(state.problems).filter(d => getTotalForDate(d) > 0).length;
+  document.getElementById('progDays').textContent = state.visits.length;
+  document.getElementById('progStreak').textContent = state.bestStreak;
+
+  let totalTopics = 0;
+  Object.entries(state.syllabusData).forEach(([s, data]) => data.topics.forEach(t => {
+    if (state.syllabus[s] && state.syllabus[s][t.name]) totalTopics++;
+  }));
+  document.getElementById('progTopics').textContent = totalTopics;
+  document.getElementById('progProbs').textContent = getTotalProblems();
+
+  // Syllabus by subject
+  const syllCont = document.getElementById('progressSyllabus');
+  syllCont.innerHTML = '';
+  const fillColors = ['fill-blue','fill-green','fill-purple','fill-amber','fill-white'];
+  Object.entries(state.syllabusData).forEach(([sec, data], i) => {
+    let d = 0;
+    data.topics.forEach(t => { if (state.syllabus[sec] && state.syllabus[sec][t.name]) d++; });
+    const pct = data.topics.length ? Math.round(d/data.topics.length*100) : 0;
+    syllCont.innerHTML += `
+      <div class="progress-wrap">
+        <div class="progress-label"><span>${sec}</span><span>${pct}%</span></div>
+        <div class="progress-track"><div class="progress-fill ${fillColors[i%fillColors.length]}" style="width:${pct}%"></div></div>
+      </div>`;
+  });
+
+  // Problems by subject
+  const probCont = document.getElementById('progressProblems');
+  probCont.innerHTML = '';
+  const subjectTotals = {};
+  state.settings.subjects.forEach(s => { subjectTotals[s] = 0; });
+  Object.values(state.problems).forEach(day => {
+    Object.entries(day).forEach(([sub, val]) => {
+      if (subjectTotals[sub] !== undefined) subjectTotals[sub] += val;
+    });
+  });
+  const maxVal = Math.max(...Object.values(subjectTotals), 1);
+  Object.entries(subjectTotals).forEach(([sub, val], i) => {
+    const pct = Math.round(val/maxVal*100);
+    probCont.innerHTML += `
+      <div class="progress-wrap">
+        <div class="progress-label"><span>${sub}</span><span>${val}</span></div>
+        <div class="progress-track"><div class="progress-fill ${fillColors[i%fillColors.length]}" style="width:${pct}%"></div></div>
+      </div>`;
+  });
+
+  // Countdown
+  const cd = getCountdown();
+  if (cd !== null) {
+    document.getElementById('bigCountdown').textContent = cd;
+    document.getElementById('bigCountdownSub').textContent = `days until SSC CGL${state.settings.examDate ? ' — ' + formatDate(state.settings.examDate) : ''}`;
+    // Time progress
+    const startDate = state.visits.length > 0 ? state.visits[0] : TODAY;
+    const start = new Date(startDate);
+    const end = new Date(state.settings.examDate);
+    const now = new Date(TODAY);
+    const totalDays = Math.round((end - start) / 86400000);
+    const elapsed = Math.round((now - start) / 86400000);
+    const tpct = Math.min(100, totalDays > 0 ? Math.round(elapsed/totalDays*100) : 0);
+    document.getElementById('timeProgressBar').style.width = tpct + '%';
+    document.getElementById('timeProgressLabel').textContent = `${elapsed} / ${totalDays} days`;
+  } else {
+    document.getElementById('bigCountdown').textContent = '—';
+    document.getElementById('bigCountdownSub').textContent = 'Set your exam date in Settings';
+  }
+}
+
+function getCountdown() {
+  if (!state.settings.examDate) return null;
+  const now = new Date(TODAY);
+  const exam = new Date(state.settings.examDate);
+  const diff = Math.round((exam - now) / 86400000);
+  return diff;
+}
+
+// =================== SETTINGS ===================
+function loadSettingsForm() {
+  document.getElementById('settingExamDate').value = state.settings.examDate || '';
+  document.getElementById('settingName').value = state.settings.name || '';
+  document.getElementById('settingProbTarget').value = state.settings.probTarget || 50;
+  document.getElementById('settingTotalGoal').value = state.settings.totalGoal || 5000;
+  renderSettingSubjects();
+  renderSyllabusManagement();
+  renderPYQPManagement();
+}
+
+function renderSyllabusManagement() {
+  const cont = document.getElementById('syllabusManagementList');
+  cont.innerHTML = '';
+  Object.entries(state.syllabusData).forEach(([section, data]) => {
+    const item = document.createElement('div');
+    item.className = 'syllabus-group card';
+    item.style.marginBottom = '12px';
+    item.innerHTML = `
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+        <strong style="font-size:14px;">${section}</strong>
+        <button class="btn btn-danger" onclick="deleteSyllabusSection('${section}')" style="padding:2px 8px;font-size:11px;">Delete Section</button>
+      </div>
+      <div class="settings-sub-list">
+        ${data.topics.map((t, idx) => `
+          <div class="settings-list-item">
+            <span>${t.name} (${t.diff})</span>
+            <button class="btn btn-danger" onclick="deleteSyllabusTopic('${section}', ${idx})" style="padding:2px 8px;font-size:11px;">✕</button>
+          </div>
+        `).join('')}
+        <div style="display:flex;gap:4px;margin-top:8px;">
+          <input type="text" id="newTopic_${section}" placeholder="Topic name..." style="padding:4px 8px;font-size:12px;" />
+          <select id="newDiff_${section}" style="width:80px;padding:4px 8px;font-size:12px;">
+            <option value="easy">Easy</option>
+            <option value="med">Med</option>
+            <option value="hard">Hard</option>
+          </select>
+          <button class="btn" onclick="addSyllabusTopic('${section}')" style="padding:4px 8px;font-size:12px;">Add</button>
+        </div>
+      </div>
+    `;
+    cont.appendChild(item);
+  });
+}
+
+function addSyllabusSection() {
+  const input = document.getElementById('newSyllabusSectionInput');
+  const section = input.value.trim();
+  if (section && !state.syllabusData[section]) {
+    state.syllabusData[section] = { color: 'fill-white', topics: [] };
+    input.value = '';
+    state.syllabusData = state.syllabusData; // Update ref
+    saveState(state);
+    renderSyllabusManagement();
+    renderSyllabus();
+    showNotif('Syllabus section added.');
+  }
+}
+
+function deleteSyllabusSection(section) {
+  if (confirm(`Delete entire section "${section}"?`)) {
+    delete state.syllabusData[section];
+    state.syllabusData = state.syllabusData; // Update ref
+    saveState(state);
+    renderSyllabusManagement();
+    renderSyllabus();
+    showNotif('Section deleted.');
+  }
+}
+
+function addSyllabusTopic(section) {
+  const nameInput = document.getElementById(`newTopic_${section}`);
+  const diffInput = document.getElementById(`newDiff_${section}`);
+  const name = nameInput.value.trim();
+  if (name) {
+    state.syllabusData[section].topics.push({ name, diff: diffInput.value });
+    nameInput.value = '';
+    saveState(state);
+    renderSyllabusManagement();
+    renderSyllabus();
+    showNotif(`Topic added to ${section}.`);
+  }
+}
+
+function deleteSyllabusTopic(section, idx) {
+  state.syllabusData[section].topics.splice(idx, 1);
+  saveState(state);
+  renderSyllabusManagement();
+  renderSyllabus();
+}
+
+function renderPYQPManagement() {
+  const cont = document.getElementById('pyqpManagementList');
+  cont.innerHTML = '';
+  state.pyqps.forEach((p, idx) => {
+    cont.innerHTML += `
+      <div class="settings-list-item">
+        <span>${p.name} (${p.date})</span>
+        <button class="btn btn-danger" onclick="deletePYQP(${idx})" style="padding:2px 8px;font-size:11px;">✕</button>
+      </div>
+    `;
+  });
+}
+
+function addPYQP() {
+  const nameInput = document.getElementById('newPYQPName');
+  const dateInput = document.getElementById('newPYQPDate');
+  const name = nameInput.value.trim();
+  const date = dateInput.value || TODAY;
+  if (name) {
+    state.pyqps.push({ id: Date.now().toString(), name, date, completed: false });
+    nameInput.value = '';
+    saveState(state);
+    renderPYQPManagement();
+    renderPYQP();
+    showNotif('PYQP added.');
+  }
+}
+
+function deletePYQP(idx) {
+  state.pyqps.splice(idx, 1);
+  saveState(state);
+  renderPYQPManagement();
+  renderPYQP();
+}
+
+function renderPYQP() {
+  const cont = document.getElementById('pyqpList');
+  if (!cont) return;
+  cont.innerHTML = '';
+  let comp = 0;
+  state.pyqps.forEach(p => {
+    if (p.completed) comp++;
+    const card = document.createElement('div');
+    card.className = `card ${p.completed ? 'done' : ''}`;
+    card.style.opacity = p.completed ? '0.7' : '1';
+    card.innerHTML = `
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <div>
+          <div style="font-weight:600;font-size:14px;${p.completed ? 'text-decoration:line-through;' : ''}">${p.name}</div>
+          <div style="font-size:11px;color:var(--text3);font-family:'JetBrains Mono',monospace;">${p.date}</div>
+        </div>
+        <button class="btn ${p.completed ? 'btn-success' : 'btn-primary'}" onclick="togglePYQP('${p.id}')">
+          ${p.completed ? '✓ Completed' : 'Mark Done'}
+        </button>
+      </div>
+    `;
+    cont.appendChild(card);
+  });
+  document.getElementById('pyqpCount').textContent = `${comp}/${state.pyqps.length} completed`;
+}
+
+function togglePYQP(id) {
+  const p = state.pyqps.find(x => x.id === id);
+  if (p) {
+    p.completed = !p.completed;
+    saveState(state);
+    renderPYQP();
+    renderDashboard();
+    showNotif(`PYQP ${p.completed ? 'completed ✓' : 'unmarked'}: ${p.name}`);
+  }
+}
+
+function renderSettingSubjects() {
+  const cont = document.getElementById('settingSubjects');
+  cont.innerHTML = state.settings.subjects.map((s, i) => `
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+      <span style="flex:1;font-size:13px;">${s}</span>
+      <button class="btn btn-danger" onclick="removeSubject(${i})" style="padding:4px 10px;">Remove</button>
+    </div>`).join('');
+}
+
+function addSubject() {
+  const val = document.getElementById('newSubjectInput').value.trim();
+  if (!val) return;
+  state.settings.subjects.push(val);
+  saveState(state);
+  document.getElementById('newSubjectInput').value = '';
+  renderSettingSubjects();
+}
+
+function removeSubject(i) {
+  state.settings.subjects.splice(i, 1);
+  saveState(state);
+  renderSettingSubjects();
+}
+
+function saveSettings() {
+  state.settings.examDate = document.getElementById('settingExamDate').value;
+  state.settings.name = document.getElementById('settingName').value;
+  state.settings.probTarget = parseInt(document.getElementById('settingProbTarget').value) || 50;
+  state.settings.totalGoal = parseInt(document.getElementById('settingTotalGoal').value) || 5000;
+  saveState(state);
+  renderAll();
+  showNotif('Settings saved!');
+  init();
+}
+
+function clearAllData() {
+  const user = getCurrentUser();
+  if (!user) return;
+  if (!confirm('This will delete ALL your progress. Are you absolutely sure?')) return;
+  localStorage.removeItem('ssc_cgl_state_' + user);
+  state = getState();
+  initSyllabusState();
+  saveState(state);
+  renderAll();
+  showNotif('All data cleared.', 'warn');
+}
+
+// =================== NAVIGATION ===================
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  
+  // Find and activate tab
+  document.querySelectorAll('.nav-tab').forEach(tab => {
+    if (tab.getAttribute('onclick').includes(`'${id}'`)) tab.classList.add('active');
+  });
+
+  state.lastPage = id;
+  saveState(state);
+
+  if (id === 'problems') renderProblems();
+  if (id === 'progress') renderProgress();
+  if (id === 'notes') renderNotes();
+  if (id === 'daily') { renderDailyLog(); renderPendingTasks(); }
+  if (id === 'pyqp') renderPYQP();
+}
+
+// =================== UTILS ===================
+function formatDate(ds) {
+  if (!ds) return '';
+  const d = new Date(ds + 'T00:00:00');
+  return d.toLocaleDateString('en-IN', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' });
+}
+
+function sanitize(s) { return s.replace(/[^a-zA-Z0-9]/g, '_'); }
+
+function escapeHtml(t) {
+  return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function showNotif(msg, type) {
+  const el = document.getElementById('notif');
+  el.textContent = msg;
+  el.className = 'notif show' + (type === 'warn' ? ' warn' : '');
+  setTimeout(() => { el.className = 'notif'; }, 2500);
+}
+
+// =================== START ===================
+init();
+</script>
+</body>
+</html>
